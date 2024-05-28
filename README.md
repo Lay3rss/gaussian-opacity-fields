@@ -1,4 +1,4 @@
-# gaussian-binary-fields
+# Installation of gaussian-binary-fields
 
 git clone https://github.com/autonomousvision/gaussian-opacity-fields.git
 cd gaussian-opacity-fields
