@@ -36,6 +36,14 @@ if problem:
 - remove the build
 `rm -rf CMakeCache.txt CMakeFiles/`
 - export all above variables
+- in CMakeLists.txt, add
+
+```
+set(CMAKE_CUDA_ARCHITECTURES 70 75 80)
+set(CMAKE_CUDA_COMPILER /usr/local/cuda-11.8/bin/nvcc)
+set(CUDACXX /usr/local/cuda-11.8/bin/nvcc)
+```
+
 - relaunch `cmake .`
 
 - references for cmake problems:
@@ -43,9 +51,3 @@ if problem:
     - https://github.com/abetlen/llama-cpp-python/issues/627
     - https://github.com/NVlabs/instant-ngp/issues/747
     - https://github.com/autonomousvision/gaussian-opacity-fields/issues/26
-
-in CMakeLists.txt, add
-
-set(CMAKE_CUDA_ARCHITECTURES 70 75 80)
-set(CMAKE_CUDA_COMPILER /usr/local/cuda-11.8/bin/nvcc)
-set(CUDACXX /usr/local/cuda-11.8/bin/nvcc)
