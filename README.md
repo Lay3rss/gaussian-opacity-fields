@@ -1,4 +1,6 @@
-# Installation of gaussian-binary-fields
+# Installation of Gaussian Binary Fields: Efficient and Compact Surface Reconstruction in Unbounded Scenes
+- paper: https://arxiv.org/pdf/2404.10772
+- project: https://github.com/autonomousvision/gaussian-opacity-fields
 
 ```
 git clone https://github.com/autonomousvision/gaussian-opacity-fields.git
@@ -31,8 +33,16 @@ pip install -e .
 ```
 
 if problem:
+- remove the build
+`rm -rf CMakeCache.txt CMakeFiles/`
+- export all above variables
+- relaunch `cmake .`
 
-rm -rf CMakeCache.txt CMakeFiles/
+- references for cmake problems:
+    - https://stackoverflow.com/questions/77727689/cmake-error-cmake-cuda-architectures-must-be-non-empty-if-set
+    - https://github.com/abetlen/llama-cpp-python/issues/627
+    - https://github.com/NVlabs/instant-ngp/issues/747
+    - https://github.com/autonomousvision/gaussian-opacity-fields/issues/26
 
 in CMakeLists.txt, add
 
