@@ -1,5 +1,6 @@
 # Installation of gaussian-binary-fields
 
+```
 git clone https://github.com/autonomousvision/gaussian-opacity-fields.git
 cd gaussian-opacity-fields
 
@@ -27,6 +28,7 @@ export CMAKE_CUDA_ARCHITECTURES=native
 cmake .
 make
 pip install -e .
+```
 
 if problem:
 
