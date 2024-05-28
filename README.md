@@ -31,3 +31,9 @@ pip install -e .
 if problem:
 
 rm -rf CMakeCache.txt CMakeFiles/
+
+in CMakeLists.txt, add
+
+set(CMAKE_CUDA_ARCHITECTURES 70 75 80)
+set(CMAKE_CUDA_COMPILER /usr/local/cuda-11.8/bin/nvcc)
+set(CUDACXX /usr/local/cuda-11.8/bin/nvcc)
