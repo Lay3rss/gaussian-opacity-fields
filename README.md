@@ -1,4 +1,4 @@
-# Installation of Gaussian Binary Fields: Efficient and Compact Surface Reconstruction in Unbounded Scenes
+# Installation of Gaussian Opacity Fields: Efficient and Compact Surface Reconstruction in Unbounded Scenes
 - paper: https://arxiv.org/pdf/2404.10772
 - project: https://github.com/autonomousvision/gaussian-opacity-fields
 
