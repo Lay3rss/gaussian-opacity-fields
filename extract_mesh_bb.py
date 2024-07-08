@@ -1,5 +1,3 @@
-# original extract_mesh.py script
-
 import torch
 from scene import Scene
 import os
@@ -36,7 +34,7 @@ def evaluage_alpha(points, views, gaussians, pipeline, background, kernel_size, 
     return alpha
 
 @torch.no_grad()
-def marching_tetrahedra_with_binary_search(model_path, name, iteration, views, gaussians, pipeline, background, kernel_size, filter_mesh : bool, texture_mesh : bool):
+def marching_tetrahedra_with_binary_search(model_path, name, iteration, views, gaussians, pipeline, background, kernel_size, filter_mesh, texture_mesh, bounding_box=None):
     render_path = os.path.join(model_path, name, "ours_{}".format(iteration), "fusion")
 
     makedirs(render_path, exist_ok=True)
@@ -87,7 +85,7 @@ def marching_tetrahedra_with_binary_search(model_path, name, iteration, views, g
     distance = torch.norm(left_points - right_points, dim=-1)
     scale = left_scale + right_scale
     
-    n_binary_steps = 8 #######################
+    n_binary_steps = 1 ########################
     for step in range(n_binary_steps):
         print("binary search in step {}".format(step))
         mid_points = (left_points + right_points) / 2
@@ -102,9 +100,9 @@ def marching_tetrahedra_with_binary_search(model_path, name, iteration, views, g
         right_points[~ind_low.flatten()] = mid_points[~ind_low.flatten()]
     
         points = (left_points + right_points) / 2
-        #############################
-        if step not in [7]:
-            continue
+        ############################
+        #if step not in [7]:
+        #    continue
         
         if texture_mesh:
             _, color = evaluage_alpha(points, views, gaussians, pipeline, background, kernel_size, return_color=True)
@@ -120,6 +118,12 @@ def marching_tetrahedra_with_binary_search(model_path, name, iteration, views, g
             mesh.update_vertices(mask)
             mesh.update_faces(face_mask)
         
+        # Apply bounding box cropping
+        if bounding_box is not None:
+            min_bound, max_bound = bounding_box
+            inside_bbox = np.all((mesh.vertices >= min_bound) & (mesh.vertices <= max_bound), axis=1)
+            mesh.update_vertices(inside_bbox)
+
         mesh.export(os.path.join(render_path, f"mesh_binary_search_{step}.ply"))
 
     # linear interpolation
@@ -129,7 +133,7 @@ def marching_tetrahedra_with_binary_search(model_path, name, iteration, views, g
     # mesh.export(os.path.join(render_path, f"mesh_binary_search_interp.ply"))
     
 
-def extract_mesh(dataset : ModelParams, iteration : int, pipeline : PipelineParams, filter_mesh : bool, texture_mesh : bool):
+def extract_mesh(dataset : ModelParams, iteration : int, pipeline : PipelineParams, filter_mesh : bool, texture_mesh : bool, bounding_box=None):
     with torch.no_grad():
         gaussians = GaussianModel(dataset.sh_degree)
         scene = Scene(dataset, gaussians, load_iteration=iteration, shuffle=False)
@@ -141,7 +145,7 @@ def extract_mesh(dataset : ModelParams, iteration : int, pipeline : PipelinePara
         kernel_size = dataset.kernel_size
         
         cams = scene.getTrainCameras()
-        marching_tetrahedra_with_binary_search(dataset.model_path, "test", iteration, cams, gaussians, pipeline, background, kernel_size, filter_mesh, texture_mesh)
+        marching_tetrahedra_with_binary_search(dataset.model_path, "test", iteration, cams, gaussians, pipeline, background, kernel_size, filter_mesh, texture_mesh, bounding_box)
 
 if __name__ == "__main__":
     # Set up command line argument parser
@@ -152,6 +156,7 @@ if __name__ == "__main__":
     parser.add_argument("--quiet", action="store_true")
     parser.add_argument("--filter_mesh", action="store_true")
     parser.add_argument("--texture_mesh", action="store_true")
+    parser.add_argument("--bounding_box", nargs=6, type=float, metavar=('xmin', 'ymin', 'zmin', 'xmax', 'ymax', 'zmax'), help="Bounding box for cropping the mesh, specified as xmin ymin zmin xmax ymax zmax")
     args = get_combined_args(parser)
     print("Rendering " + args.model_path)
     
@@ -160,4 +165,8 @@ if __name__ == "__main__":
     torch.manual_seed(0)
     torch.cuda.set_device(torch.device("cuda:0"))
     
-    extract_mesh(model.extract(args), args.iteration, pipeline.extract(args), args.filter_mesh, args.texture_mesh)
+    bounding_box = None
+    if args.bounding_box:
+        bounding_box = (np.array(args.bounding_box[:3], dtype=np.float32), np.array(args.bounding_box[3:], dtype=np.float32))
+    
+    extract_mesh(model.extract(args), args.iteration, pipeline.extract(args), args.filter_mesh, args.texture_mesh, bounding_box)

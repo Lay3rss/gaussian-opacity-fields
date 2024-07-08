@@ -1,6 +1,10 @@
 *.pyc
 .vscode
-output
+outputs
+data
+data_millinaire
+*.mp4
+*.MP4
 build
 diff_rasterization/diff_rast.egg-info
 diff_rasterization/dist

@@ -64,7 +64,9 @@ class GaussianModel:
         self.appearance_network = AppearanceNetwork(3+64, 3).cuda()
         
         std = 1e-4
-        self._appearance_embeddings = nn.Parameter(torch.empty(2048, 64).cuda())
+        #######mine#####
+        #self._appearance_embeddings = nn.Parameter(torch.empty(2048, 64).cuda())
+        self._appearance_embeddings = nn.Parameter(torch.empty(8192, 64).cuda())
         self._appearance_embeddings.data.normal_(0, std)
 
     def capture(self):

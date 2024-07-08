@@ -75,14 +75,14 @@ class PipelineParams(ParamGroup):
         self.compute_view2gaussian_python = False
         self.debug = False
         super().__init__(parser, "Pipeline Parameters")
-
+#########mine
 class OptimizationParams(ParamGroup):
     def __init__(self, parser):
-        self.iterations = 30_000
-        self.position_lr_init = 0.00016
-        self.position_lr_final = 0.0000016
-        self.position_lr_delay_mult = 0.01
-        self.position_lr_max_steps = 30_000
+        self.iterations = 1_000_000 #30_000 
+        self.position_lr_init = 0.000016 #0.00016
+        self.position_lr_final = 0.00000016 #0.0000016
+        self.position_lr_delay_mult = 0.001 #0.01
+        self.position_lr_max_steps = 1_000_000 #50_000 #30_000
         self.feature_lr = 0.0025
         self.opacity_lr = 0.05
         self.scaling_lr = 0.005
@@ -97,8 +97,8 @@ class OptimizationParams(ParamGroup):
         self.depth_normal_from_iter = 15000
         self.densification_interval = 100
         self.opacity_reset_interval = 3000
-        self.densify_from_iter = 500
-        self.densify_until_iter = 15_000
+        self.densify_from_iter = 1000 #500
+        self.densify_until_iter = 30_000 #15_000
         self.densify_grad_threshold = 0.0002
         super().__init__(parser, "Optimization Parameters")
 
